@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import cryptoService from "../services/cryptoService";
+import { fetchCryptoList } from "../services/coinWatchDataService";
 
 const getCryptoData = async (req: Request, res: Response) => {
   try {
@@ -35,4 +36,15 @@ const getCryptoData = async (req: Request, res: Response) => {
   }
 };
 
-export { getCryptoData };
+const getCryptoList = async (req: Request, res: Response) => {
+  try {
+    const cryptoList = await fetchCryptoList();
+
+    res.status(200).json(cryptoList.map((val) => val.code));
+  } catch (error) {
+    console.error("Error updating crypto list:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export { getCryptoData, getCryptoList };

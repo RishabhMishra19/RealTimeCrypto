@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { pollCryptoData } from "../services/pollCryptoDataService";
+import { pollCryptoData } from "../services/dataPollingService";
 
 const fetchLiveCryptoData = async (req: Request, res: Response) => {
   try {

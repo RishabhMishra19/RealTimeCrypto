@@ -2,10 +2,10 @@ import express from "express";
 import connectDB from "./config/db";
 import cors from "cors";
 import morgan from "morgan";
-import { setupRouter } from "./routes/setUpRoutes";
 import { SetupData } from "./models/setupData";
 import { cryptoRouter } from "./routes/crytoRoutes";
-import { pollCryptoData } from "./services/pollCryptoDataService";
+import { pollCryptoData } from "./services/dataPollingService";
+import { setupRouter } from "./routes/setupRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 5000;

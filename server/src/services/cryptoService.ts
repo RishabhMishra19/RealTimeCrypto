@@ -1,4 +1,5 @@
 import { CryptoData } from "../models/cryptoData";
+import { CoinWatchCryptoResponse } from "../types/coinWatch.types";
 
 interface GetCryptoDataOptions {
   page?: number;
@@ -58,6 +59,22 @@ const getCryptoDataWithPagination = async (options: GetCryptoDataOptions) => {
   }
 };
 
+export const saveCryptoData = async ({
+  payload,
+}: {
+  payload: CoinWatchCryptoResponse;
+}) => {
+  try {
+    const cryptoData = new CryptoData(payload);
+    await cryptoData.save();
+    console.log("Crypto data saved successfully");
+  } catch (error) {
+    console.error("Error saving crypto data:", error);
+    throw error;
+  }
+};
+
 export default {
   getCryptoDataWithPagination,
+  saveCryptoData,
 };
