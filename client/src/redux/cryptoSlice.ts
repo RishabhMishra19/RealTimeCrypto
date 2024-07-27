@@ -1,60 +1,74 @@
-// redux/cryptoSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 
-interface CryptoData {
+export interface Crypto {
+  code: string;
+  currency: string;
   name: string;
+  symbol: string;
   rank: number;
+  age: number;
+  png32: string;
+  exchanges: number;
+  markets: number;
+  allTimeHighUSD: number;
   rate: number;
   volume: number;
   cap: number;
-  code: string;
-  [key: string]: unknown;
+  liquidity: number;
+  delta: {
+    hour: number;
+    day: number;
+    week: number;
+    month: number;
+    quarter: number;
+    year: number;
+  };
 }
 
 export interface CryptoState {
-  data: CryptoData[];
-  sortBy: string;
-  sortOrder: "asc" | "desc";
-  currentPage: number;
-  itemsPerPage: number;
+  data: Crypto[];
+  limit: number;
+  page: number;
+  total: number;
+  totalPages: number;
 }
 
 const initialState: CryptoState = {
   data: [],
-  sortBy: "name",
-  sortOrder: "asc",
-  currentPage: 1,
-  itemsPerPage: 20,
+  limit: 10,
+  page: 1,
+  total: 0,
+  totalPages: 0,
 };
+
+type AsyncThunkConfig = Record<string, never>;
+
+export const fetchCryptoList = createAsyncThunk<
+  CryptoState,
+  void,
+  AsyncThunkConfig
+>("crypto/fetchCryptoList", async () => {
+  const response = await axios.get("/api/crypto/data");
+  return response.data;
+});
 
 const cryptoSlice = createSlice({
   name: "crypto",
   initialState,
-  reducers: {
-    setCryptoData(state, action: PayloadAction<CryptoData[]>) {
-      state.data = action.payload;
-    },
-    setSortBy(state, action: PayloadAction<string>) {
-      state.sortBy = action.payload;
-    },
-    setSortOrder(state, action: PayloadAction<"asc" | "desc">) {
-      state.sortOrder = action.payload;
-    },
-    setCurrentPage(state, action: PayloadAction<number>) {
-      state.currentPage = action.payload;
-    },
-    setItemsPerPage(state, action: PayloadAction<number>) {
-      state.itemsPerPage = action.payload;
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(
+        fetchCryptoList.fulfilled,
+        (state, action: PayloadAction<CryptoState>) => {
+          return action.payload;
+        }
+      )
+      .addCase(fetchCryptoList.rejected, (state, action) => {
+        console.error("Failed to fetch crypto data:", action.error.message);
+      });
   },
 });
-
-export const {
-  setCryptoData,
-  setSortBy,
-  setSortOrder,
-  setCurrentPage,
-  setItemsPerPage,
-} = cryptoSlice.actions;
 
 export default cryptoSlice.reducer;

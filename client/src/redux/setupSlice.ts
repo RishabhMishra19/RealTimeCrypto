@@ -15,7 +15,6 @@ const initialState: SetupState = {
   currency: "USD",
 };
 
-// Define the type for AsyncThunkConfig if needed (it can be an empty object if you don't use extra fields)
 type AsyncThunkConfig = Record<string, never>;
 
 export const fetchSetupData = createAsyncThunk<
@@ -24,6 +23,15 @@ export const fetchSetupData = createAsyncThunk<
   AsyncThunkConfig
 >("setup/fetchSetupData", async () => {
   const response = await axios.get<SetupState>("/api/setup");
+  return response.data;
+});
+
+export const updateSetupData = createAsyncThunk<
+  SetupState,
+  SetupState,
+  AsyncThunkConfig
+>("setup/updateSetupData", async (setupData) => {
+  const response = await axios.post<SetupState>("/api/setup", setupData);
   return response.data;
 });
 
@@ -52,8 +60,17 @@ const setupSlice = createSlice({
           return action.payload;
         }
       )
+      .addCase(
+        updateSetupData.fulfilled,
+        (state, action: PayloadAction<SetupState>) => {
+          return action.payload;
+        }
+      )
       .addCase(fetchSetupData.rejected, (state, action) => {
         console.error("Failed to fetch setup data:", action.error.message);
+      })
+      .addCase(updateSetupData.rejected, (state, action) => {
+        console.error("Failed to update setup data:", action.error.message);
       });
   },
 });

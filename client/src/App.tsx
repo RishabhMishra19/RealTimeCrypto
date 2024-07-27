@@ -1,14 +1,19 @@
-import './App.css'
-import Home from './pages/Home'
-import React from 'react';
+// src/App.tsx
+import React from "react";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import Setup from "./components/Setup";
+import CryptoDataTable from "./components/CryptoDataTable";
 
-function App() {
-
+const App: React.FC = () => {
   return (
-    <>
-      <Home />
-    </>
-  )
-}
+    <Provider store={store}>
+      <div className="App">
+        <Setup />
+        <CryptoDataTable />
+      </div>
+    </Provider>
+  );
+};
 
-export default App
+export default App;
