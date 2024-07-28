@@ -5,15 +5,33 @@ import {
 } from "../utils/constants";
 import { useQuery } from "react-query";
 import { Spinner, Text, VStack } from "@chakra-ui/react";
-import { useState } from "react";
 import { fetchCryptoDataQueryKey } from "../utils/crypto-utils/crypto-data.queryKeys";
 import { fetchCryptoData } from "../utils/crypto-utils/crypto-data.service";
 import { MultiSelect } from "chakra-multiselect";
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import {
+  setCryptoCode,
+  setPageNum,
+  setRecordsPerPage,
+} from "../redux/globalSlice";
 
 export const CryptoTable = () => {
-  const [pageNum, setPageNum] = useState(1);
-  const [recordsPerPage, setRecordsPerPage] = useState(10);
-  const [cryptoCode, setCryptoCode] = useState("BTC");
+  const dispatch = useAppDispatch();
+  const cryptoCode = useAppSelector((state) => state.global.cryptoCode);
+  const pageNum = useAppSelector((state) => state.global.pageNum);
+  const recordsPerPage = useAppSelector((state) => state.global.recordsPerPage);
+
+  const onPageNumChange = (newPageNum: number) => {
+    dispatch(setPageNum(newPageNum));
+  };
+
+  const onCryptoCodeChange = (newCryptoCode: string) => {
+    dispatch(setCryptoCode(newCryptoCode));
+  };
+
+  const onRecordsPerPageChange = (newRecordsPerPage: number) => {
+    dispatch(setRecordsPerPage(newRecordsPerPage));
+  };
 
   const { data: cryptoData, isLoading: isLoadingCryptoData } = useQuery(
     [fetchCryptoDataQueryKey, pageNum, recordsPerPage, cryptoCode],
@@ -46,7 +64,7 @@ export const CryptoTable = () => {
         placeholder="Select currency"
         single
         onChange={(selectedOptions) => {
-          setCryptoCode(selectedOptions as unknown as string);
+          onCryptoCodeChange(selectedOptions as unknown as string);
         }}
       />
       <ReactTable
@@ -55,9 +73,9 @@ export const CryptoTable = () => {
         pageCount={cryptoData.totalPages}
         totalRecords={cryptoData.total}
         pageNum={pageNum}
-        setPageNum={setPageNum}
+        setPageNum={onPageNumChange}
         recordsPerPage={recordsPerPage}
-        setRecordsPerPage={setRecordsPerPage}
+        setRecordsPerPage={onRecordsPerPageChange}
       />
     </VStack>
   );

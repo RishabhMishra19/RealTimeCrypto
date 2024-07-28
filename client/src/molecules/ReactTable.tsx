@@ -61,11 +61,6 @@ export const ReactTable = <T extends object>({
     setPageNum(pageNum - 1);
   };
 
-  const isPrevDisabled = pageNum === 1;
-  const isNextDisabled = pageNum === pageCount;
-
-  console.log({ isPrevDisabled, isNextDisabled, pageNum });
-
   return (
     <div style={{ width: "100%" }}>
       <table {...getTableProps()} className={styles.table}>

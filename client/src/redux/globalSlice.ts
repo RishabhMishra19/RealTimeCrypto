@@ -28,7 +28,7 @@ const globalSlice = createSlice({
         pageNum: action.payload,
       };
     },
-    setTrackedCryptoCodes(state, action: PayloadAction<number>) {
+    setRecordsPerPage(state, action: PayloadAction<number>) {
       return {
         ...state,
         recordsPerPage: action.payload,
@@ -37,7 +37,7 @@ const globalSlice = createSlice({
   },
 });
 
-export const { setCryptoCode, setPageNum, setTrackedCryptoCodes } =
+export const { setCryptoCode, setPageNum, setRecordsPerPage } =
   globalSlice.actions;
 
 export default globalSlice.reducer;
