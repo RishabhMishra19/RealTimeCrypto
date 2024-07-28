@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export interface Crypto {
+export interface ICrypto {
   code: string;
   currency: string;
   name: string;
@@ -26,15 +26,15 @@ export interface Crypto {
   };
 }
 
-export interface CryptoState {
-  data: Crypto[];
+export interface ICryptoState {
+  data: ICrypto[];
   limit: number;
   page: number;
   total: number;
   totalPages: number;
 }
 
-const initialState: CryptoState = {
+const initialState: ICryptoState = {
   data: [],
   limit: 10,
   page: 1,
@@ -45,7 +45,7 @@ const initialState: CryptoState = {
 type AsyncThunkConfig = Record<string, never>;
 
 export const fetchCryptoList = createAsyncThunk<
-  CryptoState,
+  ICryptoState,
   void,
   AsyncThunkConfig
 >("crypto/fetchCryptoList", async () => {
@@ -65,7 +65,7 @@ const cryptoSlice = createSlice({
     builder
       .addCase(
         fetchCryptoList.fulfilled,
-        (state, action: PayloadAction<CryptoState>) => {
+        (state, action: PayloadAction<ICryptoState>) => {
           return action.payload;
         }
       )

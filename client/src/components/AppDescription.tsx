@@ -7,7 +7,7 @@ export const AppDescription = () => {
       style={{
         background:
           "linear-gradient(127.09deg, rgba(24, 29, 60, 0.94) 19.41%, rgba(10, 14, 35, 0.49) 76.65%)",
-        width: "300px",
+        width: "200px",
       }}
     >
       <Text>Watch Real Time Crypto</Text>

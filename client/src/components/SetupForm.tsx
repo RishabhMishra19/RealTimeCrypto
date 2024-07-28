@@ -1,111 +1,116 @@
 import { useForm, Controller } from "react-hook-form";
 import {
-  FormErrorMessage,
   FormLabel,
   FormControl,
   Input,
   Button,
-  Checkbox,
+  Box,
+  Switch,
+  Text,
 } from "@chakra-ui/react";
-import { Select } from "chakra-react-select";
-import Multiselect from "multiselect-react-dropdown";
-import { updateSetupData } from "../redux/setupSlice";
+import { SetupState, updateSetupData } from "../redux/setupSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
+import { CryptoCurrencyOptions, CryptoOptions } from "../utils/constants";
+import { MultiSelect, Option } from "chakra-multiselect";
 
 export const SetupForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const setup = useSelector((state: RootState) => state.setup);
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors, isSubmitting },
-    control,
-  } = useForm({ defaultValues: setup });
+  const { handleSubmit, control } = useForm<SetupState>({
+    defaultValues: setup,
+  });
 
-  function onSubmit(values) {
-    console.log({ values });
-    values.currency = values.currency?.value ?? "";
-    dispatch(updateSetupData(values));
-  }
-
-  const currencyOptions = [
-    { label: "USD", value: "USD" },
-    { label: "EUR", value: "EUR" },
-    { label: "JPY", value: "JPY" },
-    { label: "GBP", value: "GBP" },
-    { label: "AUD", value: "AUD" },
-    { label: "CAD", value: "CAD" },
-    { label: "CHF", value: "CHF" },
-    { label: "CNY", value: "CNY" },
-    { label: "SEK", value: "SEK" },
-    { label: "NZD", value: "NZD" },
-  ];
+  const onSubmit = (data: SetupState) => {
+    dispatch(updateSetupData(data));
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormControl isInvalid={!!errors}>
-        <FormLabel htmlFor="name">Polling Enabled?</FormLabel>
-        <Checkbox
-          id="pollingEnabled"
-          checked={Boolean(setup.pollingEnabled)}
-          {...register("pollingEnabled")}
-        />
-        <FormLabel htmlFor="pollingIntervalInSec">Polling Interval</FormLabel>
-        <Input
-          id="pollingIntervalInSec"
-          //   placeholder='Polling Interval'
-          type="number"
-          {...register("pollingIntervalInSec")}
-        />
+    <Box maxWidth="300px" mx="auto">
+      <Text fontSize="md" fontWeight="bold" mb="10px">
+        Setup
+      </Text>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormControl display="flex" alignItems="center" mb="4">
+          <FormLabel htmlFor="pollingEnabled" mb="0">
+            Polling Enabled
+          </FormLabel>
+          <Controller
+            name="pollingEnabled"
+            control={control}
+            render={({ field }) => (
+              <Switch
+                isChecked={field.value}
+                onChange={(e) => field.onChange(e.target.checked)}
+              />
+            )}
+          />
+        </FormControl>
 
-        <FormLabel htmlFor="name">Tracked Crypto Codes</FormLabel>
-        <Controller
-          control={control}
-          name="trackedCryptoCodes"
-          render={({ field: { value, onChange } }) => (
-            <Multiselect
-              options={setup.trackedCryptoCodes} //TODO: Fetch All Tracked Crypto Codes
-              isObject={false}
-              showCheckbox
-              hidePlaceholder={true}
-              closeOnSelect={false}
-              onSelect={onChange}
-              onRemove={onChange}
-              selectedValues={setup.trackedCryptoCodes} //TODO: localSetup.trackedCryptoCodes
-            />
-          )}
-        />
-        <FormLabel htmlFor="currency">Currency</FormLabel>
-        <Controller
-          control={control}
-          name="currency"
-          rules={{ required: "Enter Currency" }}
-          render={({
-            field: { onChange, value, onBlur, name, ref },
-            fieldState: { error },
-          }) => (
-            <Select
-              // isMulti
-              name={name}
-              ref={ref}
-              onChange={onChange}
-              onBlur={onBlur}
-              value={value}
-              options={currencyOptions} //TODO: Move it to a state
-              placeholder="Currency"
-              closeMenuOnSelect
-            />
-          )}
-        />
-        <FormErrorMessage>
-          {errors.currency && errors.currency.message}
-        </FormErrorMessage>
-      </FormControl>
-      <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
-        Save Setup
-      </Button>
-    </form>
+        <FormControl mb="4">
+          <FormLabel htmlFor="pollingIntervalInSec">
+            Polling Interval (in seconds)
+          </FormLabel>
+          <Controller
+            name="pollingIntervalInSec"
+            control={control}
+            render={({ field }) => (
+              <Input type="number" id="pollingIntervalInSec" {...field} />
+            )}
+          />
+        </FormControl>
+
+        <FormControl mb="4">
+          <FormLabel>Tracked Crypto Codes</FormLabel>
+          <Controller
+            name="trackedCryptoCodes"
+            control={control}
+            render={({ field }) => (
+              <MultiSelect
+                {...field}
+                options={CryptoOptions}
+                placeholder="Select tracked crypto codes"
+                value={CryptoOptions.filter((option) =>
+                  field.value.includes(option.value)
+                )}
+                onChange={(selectedOptions) => {
+                  const selectedValues = (selectedOptions as Option[]).map(
+                    (option) => option.value
+                  );
+                  field.onChange(selectedValues);
+                }}
+              />
+            )}
+          />
+        </FormControl>
+
+        <FormControl mb="4">
+          <FormLabel>Currency</FormLabel>
+          <Controller
+            name="currency"
+            control={control}
+            render={({ field }) => (
+              <MultiSelect
+                {...field}
+                options={CryptoCurrencyOptions}
+                placeholder="Select currency"
+                single
+                value={CryptoCurrencyOptions.find(
+                  (option) => option.value === field?.value
+                )}
+                onChange={(selectedOptions) => {
+                  field.onChange(selectedOptions);
+                }}
+              />
+            )}
+          />
+        </FormControl>
+
+        <Button mt={4} colorScheme="teal" type="submit">
+          Update
+        </Button>
+      </form>
+    </Box>
   );
 };

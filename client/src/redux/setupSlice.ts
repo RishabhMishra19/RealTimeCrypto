@@ -57,7 +57,22 @@ const setupSlice = createSlice({
       .addCase(
         fetchSetupData.fulfilled,
         (state, action: PayloadAction<SetupState>) => {
-          return action.payload;
+          console.log({
+            mishra: {
+              ...action.payload,
+              currency: action.payload.currency.length
+                ? action.payload
+                : initialState.currency,
+            },
+            action,
+            state,
+          });
+          return {
+            ...action.payload,
+            currency: action.payload.currency.length
+              ? action.payload
+              : initialState.currency,
+          };
         }
       )
       .addCase(

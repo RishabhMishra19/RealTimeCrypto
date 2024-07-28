@@ -1,7 +1,8 @@
 import { SetupComponent } from "../components/SetupComponent";
-import { CryptoDataTable2 } from "../components/CryptoDataTable2";
 import { HStack } from "@chakra-ui/react";
 import { AppDescription } from "../components/AppDescription";
+import { CryptoTable } from "../components/CryptoTable";
+import { SetupForm } from "../components/SetupForm";
 
 export const Home = () => {
   return (
@@ -15,8 +16,9 @@ export const Home = () => {
       }}
     >
       <AppDescription />
-      <CryptoDataTable2 />
-      <SetupComponent />
+      <CryptoTable />
+      <SetupForm />
+      {/* <SetupComponent /> */}
     </HStack>
   );
 };
