@@ -3,14 +3,14 @@ import axios from "axios";
 
 export interface SetupState {
   pollingEnabled: boolean;
-  pollingInterval: number;
+  pollingIntervalInSec: number;
   trackedCryptoCodes: string[];
   currency: string;
 }
 
 const initialState: SetupState = {
   pollingEnabled: false,
-  pollingInterval: 10,
+  pollingIntervalInSec: 10,
   trackedCryptoCodes: [],
   currency: "USD",
 };
@@ -43,7 +43,7 @@ const setupSlice = createSlice({
       state.pollingEnabled = action.payload;
     },
     setPollingInterval(state, action: PayloadAction<number>) {
-      state.pollingInterval = action.payload;
+      state.pollingIntervalInSec = action.payload;
     },
     setTrackedCryptoCodes(state, action: PayloadAction<string[]>) {
       state.trackedCryptoCodes = action.payload;

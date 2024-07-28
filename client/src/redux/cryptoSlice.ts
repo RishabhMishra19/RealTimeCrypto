@@ -56,7 +56,11 @@ export const fetchCryptoList = createAsyncThunk<
 const cryptoSlice = createSlice({
   name: "crypto",
   initialState,
-  reducers: {},
+  reducers: {
+    setCryptoData: (data: any) => {
+      return { ...initialState, data: data };
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(

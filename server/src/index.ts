@@ -25,7 +25,7 @@ app.use("/api/setup", setupRouter);
 app.use("/api/crypto", cryptoRouter);
 
 // Polling interval handler
-let pollingInterval: NodeJS.Timeout | null = null;
+let pollingIntervalInSec: NodeJS.Timeout | null = null;
 
 const setupChangeStream = () => {
   try {
@@ -34,13 +34,13 @@ const setupChangeStream = () => {
     changeStream.on("change", async (change) => {
       console.log("Setup Change detected:", change.operationType);
 
-      if (pollingInterval) {
-        clearInterval(pollingInterval);
+      if (pollingIntervalInSec) {
+        clearInterval(pollingIntervalInSec);
       }
 
       const setup = await SetupData.findOne();
       if (setup && setup.pollingEnabled) {
-        pollingInterval = setInterval(
+        pollingIntervalInSec = setInterval(
           pollCryptoData,
           setup.pollingIntervalInSec * 1000
         );
@@ -61,7 +61,7 @@ const initializePolling = async () => {
   try {
     const setup = await SetupData.findOne();
     if (setup && setup.pollingEnabled) {
-      pollingInterval = setInterval(
+      pollingIntervalInSec = setInterval(
         pollCryptoData,
         setup.pollingIntervalInSec * 1000
       );
