@@ -1,4 +1,3 @@
-import React from "react";
 import {
   useTable,
   usePagination,
@@ -9,57 +8,66 @@ import {
   UsePaginationState,
   TableState,
 } from "react-table";
-import ReactPaginate from "react-paginate";
 import styles from "./ReactTable.module.scss"; // Importing the SCSS file
+import { Pagination } from "../components/Pagination";
 
 interface ReactTableProps<T extends object> {
   columns: Column<T>[];
   data: T[];
-  fetchMoreData: (pageIndex: number) => void;
   pageCount: number;
-  totalCount: number;
+  totalRecords: number;
+  pageNum: number;
+  setPageNum: (pageNum: number) => void;
+  recordsPerPage: number;
+  setRecordsPerPage: (recordsPerPage: number) => void;
 }
 
 interface TableStateWithPagination<T extends object>
   extends TableState<T>,
     UsePaginationState<T> {}
 
-const ReactTable = <T extends object>({
+export const ReactTable = <T extends object>({
   columns,
   data,
-  fetchMoreData,
   pageCount,
-  totalCount,
+  totalRecords,
+  pageNum,
+  setPageNum,
+  recordsPerPage,
+  setRecordsPerPage,
 }: ReactTableProps<T>) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    state,
-  } = useTable<T>(
-    {
-      columns,
-      data,
-      initialState: { pageIndex: 0 } as Partial<TableStateWithPagination<T>>,
-      manualPagination: true,
-      pageCount,
-    } as TableOptions<T> & {
-      manualPagination: boolean;
-      pageCount: number;
-    },
-    usePagination
-  ) as TableInstance<T> & UsePaginationInstanceProps<T> & TableOptions<T>;
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, page } =
+    useTable<T>(
+      {
+        columns,
+        data,
+        initialState: { pageIndex: 0, pageSize: 10 } as Partial<
+          TableStateWithPagination<T>
+        >,
+        manualPagination: true,
+        pageCount,
+      } as TableOptions<T> & {
+        manualPagination: boolean;
+        pageCount: number;
+      },
+      usePagination
+    ) as TableInstance<T> & UsePaginationInstanceProps<T> & TableOptions<T>;
 
-  const { pageIndex } = state as TableStateWithPagination<T>;
-
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    fetchMoreData(selectedItem.selected);
+  const handleNext = () => {
+    setPageNum(pageNum + 1);
   };
 
+  const handlePrev = () => {
+    setPageNum(pageNum - 1);
+  };
+
+  const isPrevDisabled = pageNum === 1;
+  const isNextDisabled = pageNum === pageCount;
+
+  console.log({ isPrevDisabled, isNextDisabled, pageNum });
+
   return (
-    <div>
+    <div style={{ width: "100%" }}>
       <table {...getTableProps()} className={styles.table}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -93,27 +101,17 @@ const ReactTable = <T extends object>({
           })}
         </tbody>
       </table>
-      <div className={styles["pagination-container"]}>
-        <ReactPaginate
-          previousLabel={"< previous"}
-          nextLabel={"next >"}
-          breakLabel={"..."}
-          breakClassName={"break-me"}
-          pageCount={pageCount}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={handlePageClick}
-          containerClassName={styles.pagination}
-          activeClassName={"active"}
-          previousClassName={"previous"}
-          nextClassName={"next"}
-          disabledClassName={"disabled"}
-        />
-      </div>
-      <div className={styles["page-info"]}>Current Page: {pageIndex + 1}</div>{" "}
-      <div className={styles["page-info"]}>Total Count: {totalCount}</div>{" "}
+      <Pagination
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+        pageCount={pageCount}
+        pageNum={pageNum}
+        setPageNum={setPageNum}
+        totalRecords={totalRecords}
+        recordsPerPage={recordsPerPage}
+        setRecordsPerPage={setRecordsPerPage}
+      />
+      <hr />
     </div>
   );
 };
-
-export default ReactTable;

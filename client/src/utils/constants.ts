@@ -1,6 +1,5 @@
 import { Column } from "react-table";
-import { ICrypto } from "../redux/cryptoSlice";
-import { SelectProps } from "@chakra-ui/react";
+import { ICrypto } from "./crypto-utils/crypto-data.types";
 
 export const CryptoTableHeader: Column<ICrypto>[] = [
   {
@@ -17,26 +16,60 @@ export const CryptoTableHeader: Column<ICrypto>[] = [
 
 export const CryptoCurrencyOptions = [
   { label: "USD", value: "USD" },
-  { label: "EUR", value: "EUR" },
-  { label: "JPY", value: "JPY" },
-  { label: "GBP", value: "GBP" },
-  { label: "AUD", value: "AUD" },
-  { label: "CAD", value: "CAD" },
-  { label: "CHF", value: "CHF" },
-  { label: "CNY", value: "CNY" },
-  { label: "SEK", value: "SEK" },
-  { label: "NZD", value: "NZD" },
+  { label: "INR", value: "INR" },
 ];
 
-export const CryptoOptions = [
-  { label: "USD", value: "USD" },
-  { label: "EUR", value: "EUR" },
-  { label: "JPY", value: "JPY" },
-  { label: "GBP", value: "GBP" },
-  { label: "AUD", value: "AUD" },
-  { label: "CAD", value: "CAD" },
-  { label: "CHF", value: "CHF" },
-  { label: "CNY", value: "CNY" },
-  { label: "SEK", value: "SEK" },
-  { label: "NZD", value: "NZD" },
+export const TrackedCryptoCodeOptions = [
+  { label: "Bitcoin", value: "BTC" },
+  { label: "Ethereum", value: "ETH" },
+  { label: "Tether", value: "USDT" },
+  { label: "Binance Coin", value: "BNB" },
+  { label: "USD Coin", value: "USDC" },
+  { label: "XRP", value: "XRP" },
+  { label: "Dogecoin", value: "DOGE" },
+  { label: "Cardano", value: "ADA" },
+  { label: "Solana", value: "SOL" },
+  { label: "Polygon", value: "MATIC" },
+  { label: "Polkadot", value: "DOT" },
+  { label: "Litecoin", value: "LTC" },
+  { label: "TRON", value: "TRX" },
+  { label: "Shiba Inu", value: "SHIB" },
+  { label: "Avalanche", value: "AVAX" },
+  { label: "Dai", value: "DAI" },
+  { label: "Wrapped Bitcoin", value: "WBTC" },
+  { label: "Uniswap", value: "UNI" },
+  { label: "Chainlink", value: "LINK" },
+  { label: "LEO Token", value: "LEO" },
+  { label: "Monero", value: "XMR" },
+  { label: "Binance USD", value: "BUSD" },
+  { label: "Toncoin", value: "TON" },
+  { label: "Bitcoin Cash", value: "BCH" },
+  { label: "Stellar", value: "XLM" },
+  { label: "Filecoin", value: "FIL" },
+  { label: "Aptos", value: "APT" },
+  { label: "TrueUSD", value: "TUSD" },
+  { label: "Crypto.com Coin", value: "CRO" },
+  { label: "OKB", value: "OKB" },
+  { label: "Hedera", value: "HBAR" },
+  { label: "Quant", value: "QNT" },
+  { label: "ApeCoin", value: "APE" },
+  { label: "VeChain", value: "VET" },
+  { label: "Terra Classic", value: "LUNC" },
+  { label: "NEAR Protocol", value: "NEAR" },
+  { label: "Algorand", value: "ALGO" },
+  { label: "Internet Computer", value: "ICP" },
+  { label: "Arbitrum", value: "ARB" },
+  { label: "The Graph", value: "GRT" },
+  { label: "Fantom", value: "FTM" },
+  { label: "Tezos", value: "XTZ" },
+  { label: "Axie Infinity", value: "AXS" },
+  { label: "The Sandbox", value: "SAND" },
+  { label: "Elrond", value: "EGLD" },
+  { label: "Decentraland", value: "MANA" },
+  { label: "Aave", value: "AAVE" },
+  { label: "Theta", value: "THETA" },
+  { label: "Huobi BTC", value: "HBTC" },
+  { label: "Maker", value: "MKR" },
 ];
+
+export const LOCAL_STORAGE_KEY = "LOCAL_STORAGE_KEY";

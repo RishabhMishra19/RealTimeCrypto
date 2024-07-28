@@ -28,4 +28,5 @@ export interface CoinWatchCryptoResponse {
 
 export interface CoinWatchCryptoListResponse {
   code: string;
+  [key: string]: any;
 }

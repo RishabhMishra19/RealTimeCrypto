@@ -1,21 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import setupReducer from "./setupSlice";
-import cryptoReducer from "./cryptoSlice";
+import globalSlice from "./globalSlice";
+import { LOCAL_STORAGE_KEY } from "../utils/constants";
 
 export const store = configureStore({
   reducer: {
-    setup: setupReducer,
-    crypto: cryptoReducer,
-  },
-  preloadedState: {
-    setup: JSON.parse(localStorage.getItem("setup") || "{}"),
-    crypto: JSON.parse(localStorage.getItem("crypto") || "[]"),
+    global: globalSlice,
   },
 });
 
 store.subscribe(() => {
-  localStorage.setItem("setup", JSON.stringify(store.getState().setup));
-  localStorage.setItem("crypto", JSON.stringify(store.getState().crypto));
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(store.getState()));
 });
 
 export type RootState = ReturnType<typeof store.getState>;

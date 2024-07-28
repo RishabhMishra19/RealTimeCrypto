@@ -1,25 +1,64 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../redux/store";
-import { fetchCryptoList } from "../redux/cryptoSlice";
 import { ReactTable } from "../molecules/ReactTable";
-import { CryptoTableHeader } from "../utils/constants";
+import {
+  CryptoTableHeader,
+  TrackedCryptoCodeOptions,
+} from "../utils/constants";
+import { useQuery } from "react-query";
+import { Spinner, Text, VStack } from "@chakra-ui/react";
+import { useState } from "react";
+import { fetchCryptoDataQueryKey } from "../utils/crypto-utils/crypto-data.queryKeys";
+import { fetchCryptoData } from "../utils/crypto-utils/crypto-data.service";
+import { MultiSelect } from "chakra-multiselect";
 
 export const CryptoTable = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const cryptoData = useSelector((state: RootState) => state.crypto);
+  const [pageNum, setPageNum] = useState(1);
+  const [recordsPerPage, setRecordsPerPage] = useState(10);
+  const [cryptoCode, setCryptoCode] = useState("BTC");
 
-  useEffect(() => {
-    dispatch(fetchCryptoList());
-  }, [dispatch]);
+  const { data: cryptoData, isLoading: isLoadingCryptoData } = useQuery(
+    [fetchCryptoDataQueryKey, pageNum, recordsPerPage, cryptoCode],
+    () =>
+      fetchCryptoData({
+        page: pageNum,
+        limit: recordsPerPage,
+        cryptoCode,
+      }),
+    {
+      select(response) {
+        return response.data;
+      },
+    }
+  );
+
+  if (isLoadingCryptoData) {
+    return <Spinner />;
+  }
+
+  if (!cryptoData) {
+    return <Text color={"red"}>Some Error Occured</Text>;
+  }
 
   return (
-    <ReactTable
-      columns={CryptoTableHeader}
-      data={cryptoData.data}
-      fetchMoreData={(pageIndex) => console.log({ pageIndex })}
-      pageCount={cryptoData.totalPages}
-      totalCount={cryptoData.total}
-    />
+    <VStack>
+      <MultiSelect
+        value={cryptoCode}
+        options={TrackedCryptoCodeOptions}
+        placeholder="Select currency"
+        single
+        onChange={(selectedOptions) => {
+          setCryptoCode(selectedOptions as unknown as string);
+        }}
+      />
+      <ReactTable
+        columns={CryptoTableHeader}
+        data={cryptoData.data}
+        pageCount={cryptoData.totalPages}
+        totalRecords={cryptoData.total}
+        pageNum={pageNum}
+        setPageNum={setPageNum}
+        recordsPerPage={recordsPerPage}
+        setRecordsPerPage={setRecordsPerPage}
+      />
+    </VStack>
   );
 };

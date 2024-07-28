@@ -1,4 +1,3 @@
-import { SetupComponent } from "../components/SetupComponent";
 import { HStack } from "@chakra-ui/react";
 import { AppDescription } from "../components/AppDescription";
 import { CryptoTable } from "../components/CryptoTable";
@@ -15,10 +14,8 @@ export const Home = () => {
         padding: "30px 50px",
       }}
     >
-      <AppDescription />
       <CryptoTable />
       <SetupForm />
-      {/* <SetupComponent /> */}
     </HStack>
   );
 };
