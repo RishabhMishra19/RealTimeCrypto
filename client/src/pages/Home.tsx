@@ -1,5 +1,4 @@
 import { HStack } from "@chakra-ui/react";
-import { AppDescription } from "../components/AppDescription";
 import { CryptoTable } from "../components/CryptoTable";
 import { SetupForm } from "../components/SetupForm";
 
